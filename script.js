@@ -19,9 +19,9 @@ let taulell = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -237,11 +237,11 @@ let obPeça = function () {
     this.angle = 0;
     this.tipo = 3;
 
-this.nova = function(){
-    this.tipo = Math.floor(Math.random()*8);
-    this.x = 4
-    this.y = -4
-}
+    this.nova = function () {
+        this.tipo = Math.floor(Math.random() * 8);
+        this.x = 4
+        this.y = -4
+    }
 
     this.dibuixa = function () {
         for (let py = 0; py < 4; py++) {
@@ -281,12 +281,13 @@ this.nova = function(){
         if (this.c < this.retras) {
             this.c++
         } else {
-            this.y++
+            if(this.colisio(this.angle, this.y+1,this.x)==false){
+                this.y++
+            }
             this.c = 0;
         }
 
     }
-
 
     this.rotar = function () {
         this.angle++
@@ -294,18 +295,35 @@ this.nova = function(){
             this.angle = 0;
         }
     }
-    this.abaix = function () {
-        this.y++
-    }
 
-    this.derecha = function () {
-        this.x++
+    this.colisio = function (angleN, yN, xN) {
+        let resultat = false;
+
+        for (py = 0; py < 4; py++) {
+            for (px = 0; px < 4; px++) {
+                if (peçaGrafic[this.tipo][angleN][py][px]>0){
+                    if(taulell[yN+py][xN+px]>0){
+                        resultat = true;
+                    }
+                }
+
+            }
+        }
+        return resultat;
     }
-    this.izquierda = function () {
-        this.x--
-    }
-    this.nova ()
 }
+
+this.abaix = function () {
+    this.y++
+}
+
+this.derecha = function () {
+    this.x++
+}
+this.izquierda = function () {
+    this.x--
+}
+this.nova()
 
 function taulelldibuixa() {
     for (let y = 4; y < altTaulell + 4; y++) {
