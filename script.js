@@ -3,12 +3,14 @@ let ctx;
 let FPS = 50;
 
 let peça;
+let retras = 50;
+let contador = 0;
 
 let ampleCanvas = 400;
 let altCanvas = 640;
 
 let ampleTaulell = 10;
-let altTaulell = 16;
+let altTaulell = 20;
 
 let amplef = 40;
 let altf = 40;
@@ -228,19 +230,16 @@ let peçaGrafic = [
 ]
 
 let obPeça = function () {
-    this.x = 4;
-    this.y = -4;
-
-    this.retras = 50;
-    this.c = 0;
+    this.x = 0;
+    this.y = 0;
 
     this.angle = 0;
-    this.tipo = 3;
+    this.tipo = 0;
 
     this.nova = function () {
         this.tipo = Math.floor(Math.random() * 8);
         this.x = 4
-        this.y = -4
+        this.y = 0
     }
 
     this.dibuixa = function () {
@@ -271,69 +270,85 @@ let obPeça = function () {
                     if (peçaGrafic[this.tipo][this.angle][py][px] == 8) {
                         ctx.fillStyle = '#cd78ff';
                     }
-                    ctx.fillRect((this.x + px) * amplef, (this.y + py) * altf, amplef, altf)
+                    ctx.fillRect((this.x + px - 1) * amplef, (this.y + py - 4) * altf, amplef, altf)
                 }
             }
         }
     }
 
     this.caer = function () {
-        if (this.c < this.retras) {
-            this.c++
+        if (contador < retras) {
+            contador++
         } else {
-            if(this.colisio(this.angle, this.y+1,this.x)==false){
+            if (this.colisio(this.angle, this.y + 1, this.x) == false) {
                 this.y++
+                contador = 0;
             }
-            this.c = 0;
+
         }
 
-    }
+        this.rotar = function () {
 
-    this.rotar = function () {
-        this.angle++
-        if (this.angle == 4) {
-            this.angle = 0;
+            let angleNou = this.angle
+            if (angleNou < 3) {
+                angleNou++
+            } else {
+                angleNou = 0
+            }
+            if (this.colisio(angleNou, this.y, this.x) == false) {
+                this.angle = angleNou
+            }
+
         }
-    }
 
-    this.colisio = function (angleN, yN, xN) {
-        let resultat = false;
 
-        for (py = 0; py < 4; py++) {
-            for (px = 0; px < 4; px++) {
-                if (peçaGrafic[this.tipo][angleN][py][px]>0){
-                    if(taulell[yN+py][xN+px]>0){
-                        resultat = true;
+        this.colisio = function (angleN, yN, xN) {
+            let resultat = false;
+
+            for (py = 0; py < 4; py++) {
+                for (px = 0; px < 4; px++) {
+                    if (peçaGrafic[this.tipo][angleN][py][px] != 0) {
+                        if (taulell[yN + py][xN + px] != 0) {
+                            resultat = true;
+                        }
                     }
+
                 }
-
             }
+            return resultat;
         }
-        return resultat;
     }
+
+    this.abaix = function () {
+        if (this.colisio(this.angle, this.y + 1, this.x) == false) {
+            this.y++
+        }
+    }
+
+    this.derecha = function () {
+        if (this.colisio(this.angle, this.y, this.x + 1) == false) {
+            this.x++
+        }
+    }
+    this.izquierda = function () {
+        if (this.colisio(this.angle, this.y, this.x - 1) == false) {
+            this.x--
+        }
+    }
+    this.nova()
 }
 
-this.abaix = function () {
-    this.y++
-}
-
-this.derecha = function () {
-    this.x++
-}
-this.izquierda = function () {
-    this.x--
-}
-this.nova()
 
 function taulelldibuixa() {
-    for (let y = 4; y < altTaulell + 4; y++) {
-        for (let x = 1; x < ampleTaulell + 1; x++) {
-            if (taulell[y][x] != 0) {
+    for (let py = 0; py < altTaulell; py++) {
+        for (let px = 0; px < ampleTaulell; px++) {
+            if (taulell[py][px] != 0) {
+                if (taulell[py][px] == 1) {
+                    ctx.fillStyle = '#ffa42e';
 
-                ctx.fillStyle = '#ffa42e';
+                }
 
-
-                ctx.fillRect((x - 1) * amplef, (y - 4) * altf, amplef, altf)
+                ctx.fillRect((px - 1) * amplef, (py - 4) * altf, amplef, altf)
             }
 
 
