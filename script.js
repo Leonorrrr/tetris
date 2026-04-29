@@ -21,9 +21,9 @@ let taulell = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -236,11 +236,47 @@ let obPeça = function () {
     this.angle = 0;
     this.tipo = 0;
 
+    this.gameOver = function(){
+        let perdut = false;
+        for(px=1; px<=ampleTaulell; px++){
+            if(taulell[3][px]!=0){
+                perdut = true;
+            }
+        }
+        return perdut;
+    }
+    
+    this.fila = function(){
+    
+        for(py=4; py<=altTaulell; py++){
+        for(px=1; px<=ampleTaulell; px++){
+            if(taulell[py][px] == 0){
+            
+            }
+        }
+    }
+
+
+
+    }
+
     this.nova = function () {
         this.tipo = Math.floor(Math.random() * 8);
         this.x = 4
         this.y = 0
     }
+
+    this.fixaPeça = function(){
+          for (let py = 0; py < 4; py++) {
+            for (let px = 0; px < 4; px++) {
+                if (peçaGrafic[this.tipo][this.angle][py][px] != 0){
+                    taulell[this.y+py][this.x+px] = peçaGrafic[this.tipo][this.angle][py][px]
+                }
+            }
+
+
+    }
+}
 
     this.dibuixa = function () {
         for (let py = 0; py < 4; py++) {
@@ -283,6 +319,12 @@ let obPeça = function () {
             if (this.colisio(this.angle, this.y + 1, this.x) == false) {
                 this.y++
                 contador = 0;
+            }else{
+                this.fixaPeça();
+                if(this.gameOver()){
+                    document.location.reload();
+                }
+                this.nova();
             }
 
         }
@@ -340,11 +382,11 @@ let obPeça = function () {
 
 
 function taulelldibuixa() {
-    for (let py = 0; py < altTaulell; py++) {
-        for (let px = 0; px < ampleTaulell; px++) {
+    for (let py = 0; py <= altTaulell; py++) {
+        for (let px = 0; px <= ampleTaulell; px++) {
             if (taulell[py][px] != 0) {
                 if (taulell[py][px] == 1) {
-                    ctx.fillStyle = '#ffa42e';
+                    ctx.fillStyle = '#07033a';
 
                 }
 
