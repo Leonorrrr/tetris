@@ -5,6 +5,7 @@ let FPS = 50;
 let peça;
 let retras = 50;
 let contador = 0;
+let puntos = 0;
 
 let ampleCanvas = 400;
 let altCanvas = 640;
@@ -14,6 +15,15 @@ let altTaulell = 20;
 
 let amplef = 40;
 let altf = 40;
+
+
+const canço = new Audio('./musica/tetris.mp3');
+const sonido1 = new Audio('./musica/fila.mp3');
+const sonido2 = new Audio('./musica/girar.mp3');
+
+
+
+
 
 let taulell = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -236,29 +246,55 @@ let obPeça = function () {
     this.angle = 0;
     this.tipo = 0;
 
-    this.gameOver = function(){
+    this.fila = function () {
+       let filafeta = false;
+
+        for (py = 4; py < altTaulell; py++) {
+            filafeta = true;
+            for (let px = 1; px <= ampleTaulell; px++) {
+                if (taulell[py][px] == 0) {
+                    filafeta = false;
+
+                }
+            }
+            if(filafeta){
+                puntos++
+                sonido1.play();
+                if(puntos%3==0){
+                    retras = retras-5;
+                }
+                for(let moverFila = py; moverFila > 0; moverFila--){
+                    for(let px = 1; px <=ampleTaulell; px++){
+                        taulell[moverFila][px]=0
+                        if(taulell[moverFila-1][px]!=0){
+                            taulell[moverFila][px]=taulell[moverFila-1][px]
+                        }
+                       
+                    }
+                }
+                for(let y = altTaulell; y>0; y--){
+                    for (let x = 1; x<= ampleTaulell; x++){
+                        if(taulell[y][x]==0){
+                            for(let yN = y; yN >0; yN--){
+                                taulell[y][x]= taulell [yN-1][x]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    this.gameOver = function () {
         let perdut = false;
-        for(px=1; px<=ampleTaulell; px++){
-            if(taulell[3][px]!=0){
+        for (px = 1; px <= ampleTaulell; px++) {
+            if (taulell[3][px] != 0) {
                 perdut = true;
             }
         }
         return perdut;
     }
-    
-    this.fila = function(){
-    
-        for(py=4; py<=altTaulell; py++){
-        for(px=1; px<=ampleTaulell; px++){
-            if(taulell[py][px] == 0){
-            
-            }
-        }
-    }
 
-
-
-    }
 
     this.nova = function () {
         this.tipo = Math.floor(Math.random() * 8);
@@ -266,17 +302,17 @@ let obPeça = function () {
         this.y = 0
     }
 
-    this.fixaPeça = function(){
-          for (let py = 0; py < 4; py++) {
+    this.fixaPeça = function () {
+        for (let py = 0; py < 4; py++) {
             for (let px = 0; px < 4; px++) {
-                if (peçaGrafic[this.tipo][this.angle][py][px] != 0){
-                    taulell[this.y+py][this.x+px] = peçaGrafic[this.tipo][this.angle][py][px]
+                if (peçaGrafic[this.tipo][this.angle][py][px] != 0) {
+                    taulell[this.y + py][this.x + px] = peçaGrafic[this.tipo][this.angle][py][px]
                 }
             }
 
 
+        }
     }
-}
 
     this.dibuixa = function () {
         for (let py = 0; py < 4; py++) {
@@ -319,9 +355,11 @@ let obPeça = function () {
             if (this.colisio(this.angle, this.y + 1, this.x) == false) {
                 this.y++
                 contador = 0;
-            }else{
+            } else {
                 this.fixaPeça();
-                if(this.gameOver()){
+                this.fila();
+
+                if (this.gameOver()) {
                     document.location.reload();
                 }
                 this.nova();
@@ -340,6 +378,7 @@ let obPeça = function () {
             if (this.colisio(angleNou, this.y, this.x) == false) {
                 this.angle = angleNou
             }
+            sonido2.play();
 
         }
 
@@ -414,6 +453,13 @@ function inicialitzaTeclat() {
         }
     })
 }
+function pintarPunts() {
+  ctx.font = "24px serif";
+  ctx.fillStyle = '#07033a';
+  ctx.fillText("Score: "+puntos, 10, 50);    
+ 
+}
+
 
 function inicia() {
     canvas = document.getElementById("canvas");
@@ -424,7 +470,10 @@ function inicia() {
 
     peça = new obPeça();
 
-
+    setTimeout(function(){
+        canço.play();
+    },2000)
+    
     inicialitzaTeclat()
 
     setInterval(function () {
@@ -437,6 +486,7 @@ function principal() {
     taulelldibuixa()
     peça.caer()
     peça.dibuixa()
+    pintarPunts();
 
 }
 
