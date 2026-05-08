@@ -425,7 +425,7 @@ function taulelldibuixa() {
         for (let px = 0; px <= ampleTaulell; px++) {
             if (taulell[py][px] != 0) {
                 if (taulell[py][px] == 1) {
-                    ctx.fillStyle = '#07033a';
+                    ctx.fillStyle = '#fbfbfc';
 
                 }
 
@@ -455,7 +455,7 @@ function inicialitzaTeclat() {
 }
 function pintarPunts() {
   ctx.font = "24px serif";
-  ctx.fillStyle = '#07033a';
+  ctx.fillStyle = '#f9f9fa';
   ctx.fillText("Score: "+puntos, 10, 50);    
  
 }
